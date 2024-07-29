@@ -2,52 +2,70 @@
 
 class BankAccount {
   #balance;
-  accNumber;
 
   constructor(accountNumber, balance) {
-    if (typeof accountNumber != typeof 1 || typeof balance != typeof 1) {
-      console.log('Enter valid data');
-      return;
+    if (typeof accountNumber !== 'number' || typeof balance !== 'number') {
+      throw new Error('Enter valid data');
     }
 
     this.accNumber = accountNumber;
     this.#balance = balance;
   }
 
-  deposite(ammount) {
-    if (typeof ammount != typeof 1) return 'Enter valid data';
-
-    if (ammount <= 0) return `Can't deposite ${ammount}`;
-
-    this.#balance += ammount;
-
-    return `Deposited ${ammount} to account number ${
+  getBalance() {
+    return `${this.#balance} is your Current balance of account number ${
       this.accNumber
-    }, New balance: ${this.#balance}`;
+    } `;
+  }
+
+  _validInput(operation, ammount) {
+    if (typeof ammount !== 'number')
+      throw new Error(`Enter valid data in ${operation}`);
+
+    if (ammount <= 0) throw new Error(`Can't ${operation} ${ammount}`);
+
+    return true;
+  }
+
+  deposite(ammount) {
+    if (this._validInput('Deposite', ammount)) {
+      this.#balance += ammount;
+      return `Deposited ${ammount} to account number ${
+        this.accNumber
+      }, New balance: ${this.#balance}`;
+    }
   }
 
   withdraw(ammount) {
-    if (typeof ammount != typeof 1) return 'Enter valid data';
+    if (this._validInput('withdraw', ammount)) {
+      this.#balance += ammount;
 
-    if (ammount <= 0) return `Can't withdraw ${ammount}`;
+      if (this.#balance < ammount)
+        throw new Error(
+          `You don't have enough balance. Current balance: ${this.#balance}`
+        );
 
-    if (this.#balance < ammount)
-      return `You don't have enough balance. Current balance: ${this.#balance}`;
+      this.#balance -= ammount;
 
-    this.#balance -= ammount;
-
-    return `Withdraw ${ammount} to account number ${
-      this.accNumber
-    }, New balance: ${this.#balance}`;
+      return `Withdraw ${ammount} to account number ${
+        this.accNumber
+      }, New balance: ${this.#balance}`;
+    }
   }
 }
 
-const acc1 = new BankAccount(123, 1000);
+try {
+  const acc1 = new BankAccount(123, 1000);
 
-console.log(acc1.deposite(0));
-console.log(acc1.deposite(-10));
-console.log(acc1.deposite(100));
-console.log(acc1.withdraw(-100));
-console.log(acc1.withdraw(0));
-console.log(acc1.withdraw(100000));
-console.log(acc1.withdraw(100));
+  // console.log(acc1.deposite(0));  // testing
+  // console.log(acc1.deposite(-10)); // testing
+  console.log(acc1.deposite(100));
+  // console.log(acc1.withdraw(-100)); // testing
+  // console.log(acc1.withdraw(0)); // testing
+  console.log(acc1.withdraw(100000));
+  console.log(acc1.withdraw(100));
+
+  console.log(acc1.getBalance());
+} catch (err) {
+  console.error(err.message);
+}

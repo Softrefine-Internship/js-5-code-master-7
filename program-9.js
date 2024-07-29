@@ -1,12 +1,9 @@
 // Write a JavaScript program that creates a class called Bank with properties for bank names and branches. Include methods to add a branch, remove a branch, and display all branches. Create an instance of the Bank class and perform operations to add and remove branches.
 
 class Bank {
-  name;
-  branch = [];
-
   constructor(name, branch) {
     this.name = name;
-    branch.map((b) => this.branch.push(b.toLowerCase()));
+    this.branch = branch.map((ele) => ele.toLowerCase());
   }
 
   displayAllBranch() {
